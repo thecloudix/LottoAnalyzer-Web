@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LottoAnalyzer — User Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F0F11;
+    --panel: #18181C;
+    --panel-2: #1F1F24;
+    --border: #2A2A30;
+    --text: #ECECEC;
+    --muted: #8E8E96;
+    --accent: #FF6B3D;
+    --accent-soft: rgba(255, 107, 61, 0.12);
+    --success: #4ADE80;
+    --warn: #FFB347;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+  body {
+    font-family: 'DM Mono', ui-monospace, Menlo, Consolas, monospace;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 40px;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(36px, 6vw, 56px);
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    line-height: 1;
+  }
+  h1 .accent { color: var(--accent); }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+    margin: 56px 0 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 19px;
+    margin: 32px 0 10px;
+    color: var(--text);
+  }
+  h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 20px 0 6px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  p { margin: 0 0 14px; color: var(--text); }
+  .sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 0;
+  }
+  ul, ol { padding-left: 22px; margin: 0 0 16px; }
+  li { margin-bottom: 6px; }
+  code {
+    font-family: 'DM Mono', monospace;
+    background: var(--panel-2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--accent);
+  }
+  pre {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-size: 13px;
+    margin: 0 0 16px;
+  }
+  pre code { background: none; padding: 0; color: var(--text); }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 14px 0 22px;
+  }
+  .panel.accent {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .panel h3 { margin-top: 0; }
+  .balls {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .ball {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .ball.pb { background: var(--accent); color: #0F0F11; border-color: var(--accent); }
+  .toc {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 32px;
+  }
+  .toc h4 { margin-top: 0; }
+  .toc ol { padding-left: 18px; }
+  .toc a { color: var(--text); text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 18px;
+    font-size: 13px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--panel);
+    font-weight: 500;
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  td code { font-size: 12px; }
+  .meta {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    color: var(--muted); font-size: 13px;
+    margin-top: 14px;
+  }
+  .meta span::before { content: "•"; margin-right: 8px; color: var(--accent); }
+  .meta span:first-child::before { content: ""; margin-right: 0; }
+  .callout {
+    border-left: 3px solid var(--accent);
+    padding: 10px 16px;
+    background: var(--accent-soft);
+    margin: 14px 0 22px;
+    border-radius: 0 8px 8px 0;
+  }
+  .callout.warn { border-color: var(--warn); background: rgba(255, 179, 71, 0.08); }
+  .callout p:last-child { margin-bottom: 0; }
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  a { color: var(--accent); }
+  .formula {
+    font-family: 'DM Mono', monospace;
+    background: var(--panel-2);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin: 8px 0 12px;
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Lotto<span class="accent">Analyzer</span> — Manual</h1>
+  <p class="sub">A statistical exploration tool for historical Powerball draws. This is an educational app for studying patterns in past results — not a betting product, and it does not predict future winning numbers.</p>
+  <div class="meta">
+    <span>Version 1.0.8</span>
+    <span>Android 8.0+ (API 26)</span>
+    <span>Last updated 2026-05-14</span>
+  </div>
+</header>
+
+<div class="toc">
+  <h4>Contents</h4>
+  <ol>
+    <li><a href="#what">What this app does</a></li>
+    <li><a href="#install">Installing and opening the app</a></li>
+    <li><a href="#nav">Navigating — the hamburger drawer</a></li>
+    <li><a href="#screens">The eight screens</a></li>
+    <li><a href="#scoring">How the score is calculated</a></li>
+    <li><a href="#settings">Settings — toggles and weights</a></li>
+    <li><a href="#filter">The date filter</a></li>
+    <li><a href="#refresh">Refreshing the dataset</a></li>
+    <li><a href="#tournament">Tournament mode</a></li>
+    <li><a href="#privacy">Data, privacy, and permissions</a></li>
+    <li><a href="#disclaimer">Important disclaimer</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+  </ol>
+</div>
+
+<h2 id="what">1. What this app does</h2>
+
+<p>LottoAnalyzer studies the history of Powerball draws and surfaces patterns: which white-ball numbers come up most often, which ones are overdue, which pairs co-occur, and how a given combination of numbers compares to historical norms.</p>
+
+<p>The app ships with <strong>606 historical draws</strong> built in (June 2022 through April 2026) so it works fully offline. When you tap <em>Refresh</em>, it pulls newer draws from the public NY State Open Data API.</p>
+
+<div class="callout">
+  <p><strong>This is a study tool, not a prediction engine.</strong> Lottery draws are independent random events — past results have no bearing on future ones. The app helps you explore the historical record, nothing more.</p>
+</div>
+
+<h2 id="install">2. Installing and opening the app</h2>
+
+<ol>
+  <li>Install <strong>LottoAnalyzer</strong> from the Google Play Store on any device running Android 8.0 (Oreo) or newer.</li>
+  <li>Open the app from your launcher. The first screen you'll see is the <strong>Frequency</strong> view, showing how often each white ball has been drawn.</li>
+  <li>No account, no sign-in, no setup. The 606-draw dataset is already inside the app.</li>
+</ol>
+
+<h2 id="nav">3. Navigating — the hamburger drawer</h2>
+
+<p>Tap the <strong>hamburger icon (☰)</strong> in the top-left corner to open the navigation drawer. From there you can jump to any of the eight screens. The drawer always shows your current screen highlighted in accent orange.</p>
+
+<p>The drawer is the only way to switch screens — there is no bottom tab bar. This keeps every screen one tap away even on small phones.</p>
+
+<h2 id="screens">4. The eight screens</h2>
+
+<h3>Frequency</h3>
+<p>A bar list of all 69 white balls, ranked by how often they've been drawn within the active <a href="#filter">date filter</a>. The most-drawn number sits at the top with the longest bar; the least-drawn at the bottom. Useful for spotting <em>hot</em> numbers in the historical record.</p>
+
+<h3>Due</h3>
+<p>The flip side of Frequency. Numbers are ranked by how many draws have passed since each one last appeared. The number with the longest gap is at the top — the <em>most overdue</em>. Each row also shows the date of the last appearance.</p>
+<p class="sub">Reminder: overdue numbers are not "due" in any predictive sense — every draw is independent. This is purely descriptive.</p>
+
+<h3>Top Picks</h3>
+<p>A leaderboard view that combines hot-frequency and overdue-rank into a single percentile score per number. The five highest-percentile white balls and the top Powerball are surfaced here. Think of it as a "what does the historical record point to" digest.</p>
+
+<h3>Pairs</h3>
+<p>The most frequent <strong>two-ball co-occurrences</strong> across the dataset. Each row shows a pair of white balls and how many draws contain both. Useful if you're curious which numbers tend to show up together.</p>
+
+<h3>Score (Score-a-Combo)</h3>
+<p>Type in 5 white balls (1–69) and 1 Powerball (1–26). The app computes the same score the engine would give that combo against the dataset, broken down by component. Tap the <strong>?</strong> next to any component name to see the formula and what the number means.</p>
+<div class="panel">
+  <p><strong>Cross-check combo:</strong> with the default settings, the combo
+    <span class="balls">
+      <span class="ball">24</span>
+      <span class="ball">28</span>
+      <span class="ball">33</span>
+      <span class="ball">47</span>
+      <span class="ball">64</span>
+      <span class="ball pb">14</span>
+    </span>
+    should always score <strong>99.64</strong> overall. If you ever get a different number, you've changed the date filter or the settings — reset them and try again.</p>
+</div>
+
+<h3>Suggest</h3>
+<p>Asks the app to <strong>generate one combination</strong> for you, optimised for whichever scoring components you have enabled. Pick a generation mode — Hot, Due, Balanced, Random, or Tournament — and tap <em>Generate</em>. The result appears with a full score breakdown.</p>
+
+<h3>Best Combos (Tournament results)</h3>
+<p>Shows the top 5 highest-scoring unique combinations from the most recent <a href="#tournament">tournament run</a>. If you haven't run one, this view is empty. Run one from the Suggest screen.</p>
+
+<h3>Settings</h3>
+<p>The control panel for the scoring engine. Toggle each of the 9 components on or off, and slide each weight from 0 to 200. See <a href="#settings">Settings</a> below for what each component does.</p>
+
+<h2 id="scoring">5. How the score is calculated</h2>
+
+<p>Every combination gets an overall score from 0 to 100, with two-decimal precision (e.g. 99.64). The overall score is a <strong>weighted average</strong> of up to 9 component scores. Each component is itself scored 0–100.</p>
+
+<p>By default, the first 5 components are enabled at weight 100; the last 4 are disabled. Here's what each one measures:</p>
+
+<table>
+  <thead>
+    <tr><th>Component</th><th>What it measures</th><th>Default</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>White avg freq</strong></td><td>How often your 5 white balls have appeared, averaged. Higher = hotter numbers.</td><td>On (100)</td></tr>
+    <tr><td><strong>Powerball freq</strong></td><td>How often your Powerball has appeared.</td><td>On (100)</td></tr>
+    <tr><td><strong>Sum</strong></td><td>Whether the sum of your 5 whites falls in the historical sweet spot (~100–200).</td><td>On (100)</td></tr>
+    <tr><td><strong>Odd / Even</strong></td><td>How balanced your odd/even split is. 2-and-3 or 3-and-2 scores best.</td><td>On (100)</td></tr>
+    <tr><td><strong>Low / High</strong></td><td>How balanced your low (1–34) vs high (35–69) split is.</td><td>On (100)</td></tr>
+    <tr><td><strong>Chi-squared</strong></td><td>How well your numbers' historical frequencies match a uniform distribution.</td><td>Off</td></tr>
+    <tr><td><strong>Z-score</strong></td><td>Standardised distance of each number's frequency from the mean.</td><td>Off</td></tr>
+    <tr><td><strong>Overdue probability</strong></td><td>Geometric/Poisson estimate of how unlikely the current dry spell is.</td><td>Off</td></tr>
+    <tr><td><strong>Sum Gaussian</strong></td><td>How close the sum is to the historical mean, weighted by the historical std dev.</td><td>Off</td></tr>
+  </tbody>
+</table>
+
+<p>For the formal formulas and an example calculation per component, tap the <strong>?</strong> next to the component name on the Score or Settings screen.</p>
+
+<h2 id="settings">6. Settings — toggles and weights</h2>
+
+<p>For every scoring component you have two controls:</p>
+<ul>
+  <li><strong>Toggle</strong> — turn the component on or off entirely. Off components contribute nothing to the overall score.</li>
+  <li><strong>Weight slider</strong> (0–200) — relative importance of this component versus the others. The default is 100. Drag to 200 to double a component's relative pull, drag to 0 to mute it without disabling the toggle.</li>
+</ul>
+
+<p>Settings persist on your device (via Android DataStore). They survive app restarts. If you want to start fresh, uninstall and reinstall.</p>
+
+<div class="callout warn">
+  <p><strong>Warning:</strong> changing the weights changes <em>every</em> score in the app — Suggest, Score, Top Picks, and Best Combos all use these settings. The cross-check combo only scores 99.64 with the defaults.</p>
+</div>
+
+<h2 id="filter">7. The date filter</h2>
+
+<p>At the top of most screens is a <strong>filter bar</strong> with date-range pills:</p>
+
+<ul>
+  <li><strong>All</strong> — every draw in the dataset.</li>
+  <li><strong>5Y / 2Y / 1Y / 6M / 3M</strong> — the most recent 5 years, 2 years, 1 year, 6 months, or 3 months.</li>
+  <li><strong>Custom</strong> — opens a date-range picker; pick a start and end date.</li>
+</ul>
+
+<p>The filter is applied <strong>across all screens</strong>: Frequency, Due, Top Picks, Pairs, and the scoring engine all recompute against only the draws inside the range. This is the right tool for asking "what's been hot this year?" or "what was the picture in 2023?".</p>
+
+<h2 id="refresh">8. Refreshing the dataset</h2>
+
+<p>Tap the <strong>Refresh</strong> button at the top of any screen. The app:</p>
+<ol>
+  <li>Connects to <code>data.ny.gov</code> (the New York State Open Data API).</li>
+  <li>Pulls every Powerball draw on file — typically a few hundred KB.</li>
+  <li>Merges the result into a local cache on your device, then recomputes statistics.</li>
+</ol>
+
+<p>This is the <em>only</em> network call the app makes, and the only time it's made. If you never tap Refresh, the app stays fully offline and uses the 606 draws shipped with the build.</p>
+
+<p>If the network is unavailable, Refresh fails silently and the app continues using the existing cache (or the embedded data if there's no cache yet).</p>
+
+<h2 id="tournament">9. Tournament mode</h2>
+
+<p>Open the <strong>Suggest</strong> screen and pick the <em>Tournament</em> mode. Set an iteration count (up to 1,000,000) and tap Run. The app:</p>
+<ol>
+  <li>Generates that many candidate combinations using the Suggest algorithm.</li>
+  <li>Scores each one using your current settings and date filter.</li>
+  <li>Keeps the top 5 unique combinations and shows them in <strong>Best Combos</strong>.</li>
+</ol>
+
+<p>The runner is chunked so the UI stays responsive — a progress bar tracks the run. You can leave the screen and come back; results land in Best Combos when finished.</p>
+
+<p class="sub">A million-iteration run takes a few seconds on a recent device, longer on older hardware. Lower the count if it lags.</p>
+
+<h2 id="privacy">10. Data, privacy, and permissions</h2>
+
+<p>The app collects nothing about you. Specifically:</p>
+
+<ul>
+  <li><strong>No analytics</strong>, no crash reporting, no advertising SDKs, no social SDKs.</li>
+  <li><strong>No account, no sign-in.</strong></li>
+  <li>The only network request is to <code>data.ny.gov</code> when you tap Refresh.</li>
+  <li>Permissions requested: <code>INTERNET</code> and <code>ACCESS_NETWORK_STATE</code> only.</li>
+</ul>
+
+<p>What's stored on your device:</p>
+<ul>
+  <li>The cached draw list (refreshed when you tap Refresh).</li>
+  <li>Your scoring settings (toggles and weights).</li>
+</ul>
+
+<p>Both are removed when you uninstall the app. The full <a href="PRIVACY_POLICY.md">privacy policy</a> is available alongside this manual.</p>
+
+<h2 id="disclaimer">11. Important disclaimer</h2>
+
+<div class="callout warn">
+  <p><strong>LottoAnalyzer does not predict winning lottery numbers.</strong> It analyses the historical record. Lottery draws are independent random events and past results provide no information about future ones.</p>
+  <p>The app does not facilitate ticket purchases, deposits, betting, or any form of wagering. It is not affiliated with the Multi-State Lottery Association or any state lottery.</p>
+  <p>If gambling has become a problem for you or someone you know, call the National Council on Problem Gambling helpline at <strong>1-800-GAMBLER</strong> (US) or your country's equivalent.</p>
+</div>
+
+<h2 id="troubleshooting">12. Troubleshooting</h2>
+
+<h4>The Refresh button does nothing</h4>
+<p>Check your internet connection. The app contacts <code>data.ny.gov</code>; if the device has no network or the API is temporarily down, Refresh fails silently. Existing data and cached draws remain available offline.</p>
+
+<h4>The cross-check combo doesn't score 99.64</h4>
+<p>Open Settings and reset to defaults: first 5 components on at weight 100, last 4 off. Also confirm the date filter is set to "All". The 99.64 reference assumes both.</p>
+
+<h4>Tournament progress bar stalls</h4>
+<p>Larger iteration counts (500k+) take longer on older devices. Wait it out, or lower the count. The chunked runner won't freeze the UI but it does take wall-clock time.</p>
+
+<h4>I want to see draws older than June 2022</h4>
+<p>The embedded dataset starts there. Older draws aren't included to keep the app size small, and the NY State API only goes back to that period as well. There are no plans to extend it.</p>
+
+<h4>Where do I report a bug or request a feature?</h4>
+<p>Email <a href="mailto:thecloudix@gmail.com">thecloudix@gmail.com</a>.</p>
+
+<footer>
+  <p>LottoAnalyzer · Manual v1.0.8 · <a href="PRIVACY_POLICY.md">Privacy Policy</a></p>
+  <p>This document is published as a static page — no scripts run on this manual.</p>
+</footer>
+
+</div>
+</body>
+</html>
