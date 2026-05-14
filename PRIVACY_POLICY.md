@@ -44,4 +44,4 @@ If this policy ever changes, the updated version will be available at the same U
 
 ## Contact
 
-For questions about this privacy policy or the app's behavior, contact: thecloudix@gmail.com
+For questions about this privacy policy or the app's behavior, contact: plainsightlogic@gmail.com
